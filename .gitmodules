@@ -1,0 +1,3 @@
+[submodule "amigadbg"]
+	path = amigadbg
+	url = ../amigadbg.git
