@@ -9,7 +9,7 @@ class BuildPyCommand(setuptools.command.build_ext.build_ext):
   """Custom build command."""
 
   def run(self):
-    call(['make', 'do_gen'])
+    call(['nmake', '-f', 'Makefile', 'do_gen'])
     setuptools.command.build_ext.build_ext.run(self)
 
 sourcefiles = [

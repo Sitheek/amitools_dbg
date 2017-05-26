@@ -128,8 +128,6 @@ class Lock:
       return ERROR_NO_MORE_ENTRIES
 
   def _handle_broken_scan(self, entries, fib_key):
-    log_lock.warning("first ExNext() does not start at Examine()d lock! Broken Code!! lock_key=%08x fib_key=%08x (%s)",
-      self.key, fib_key, self.name)
     # we shrink the dir list to start after the given key
     # and simulate a continued scan as AmigaOS' FFS would do it
     while len(entries) > 0:

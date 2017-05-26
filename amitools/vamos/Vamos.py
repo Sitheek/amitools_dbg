@@ -25,6 +25,8 @@ from Log import *
 from CPU import *
 from Exceptions import *
 
+from Debugger import Debugger
+
 class Vamos:
 
   def __init__(self, raw_mem, cpu, traps, cfg):
@@ -34,6 +36,9 @@ class Vamos:
     self.cpu_type = cfg.cpu
     self.traps = traps
     self.cfg = cfg
+
+    if cfg.debugger:
+      self.debugger = Debugger(self)
 
     # too much RAM requested?
     # our "custom chips" start at $BFxxxx so we allow RAM only to be below
@@ -104,10 +109,16 @@ class Vamos:
 
   def _setup_memory(self, mem):
     cfg = self.cfg
+
+    if cfg.debugger:
+      mem.set_trace_mode(1)
+      mem.set_trace_func(self.debugger.check_breakpoint)
+      #mem.set_trace_func(self.label_mgr.trace_mem)
+
     # enable mem trace?
     if cfg.memory_trace:
-      mem.set_trace_mode(1)
-      mem.set_trace_func(self.label_mgr.trace_mem)
+      # mem.set_trace_mode(1)
+      # mem.set_trace_func(self.label_mgr.trace_mem)
       if not log_mem.isEnabledFor(logging.DEBUG):
         log_mem.setLevel(logging.DEBUG)
     # enable internal memory trace?

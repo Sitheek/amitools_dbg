@@ -64,7 +64,11 @@ def main():
   parser.add_argument('-p', '--path', action='append', default=None, help="define command search ami path, e.g. c:")
   parser.add_argument('-d', '--cwd', action='store', default=None, help="set current working directory")
   parser.add_argument('-P', '--pure-ami-paths', action='store_true', default=None, help="do not allow sys paths for binary")
+  #debugger
+  parser.add_argument('-dbg', '--debugger', action='store_true', default=None, help="Enable debugger")
   args = parser.parse_args()
+
+  args.args = [words for segments in args.args for words in segments.split()]
 
   # --- init config ---
   cfg = VamosConfig(extra_file=args.config_file, skip_defaults=args.skip_default_configs, args=args, def_data_dir=data_dir)

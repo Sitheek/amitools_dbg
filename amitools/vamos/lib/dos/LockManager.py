@@ -15,10 +15,16 @@ class LockManager:
     self.dos_list = dos_list
     self.alloc    = alloc
     self.mem      = mem
+    self.keys = {}
+    self.next_key = 256
     self.locks_by_baddr = {}
 
   def generate_key(self, system_path):
-    return os.lstat(system_path).st_ino
+    if system_path in self.keys:
+      return self.keys[system_path]
+    self.next_key += 1
+    self.keys[system_path] = self.next_key
+    return self.next_key
 
   def _register_lock(self, lock):
     # look up volume

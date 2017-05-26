@@ -7,3 +7,4 @@ gen/
 emu.c
 emu.so
 
+/.idea/workspace.xml

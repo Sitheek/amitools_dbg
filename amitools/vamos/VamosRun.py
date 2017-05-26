@@ -36,7 +36,9 @@ class VamosRun:
     if self.ctx.cfg.instr_trace:
       if not log_instr.isEnabledFor(logging.INFO):
         log_instr.setLevel(logging.INFO)
-      self.cpu.set_instr_hook_callback(self.instr_hook)
+      # self.cpu.set_instr_hook_callback(self.instr_hook)
+    if self.ctx.cfg.debugger:
+      self.cpu.set_instr_hook_callback(self.ctx.debugger.process_debug)
 
   def _init_cpu(self):
     # prepare m68k
@@ -122,6 +124,9 @@ class VamosRun:
     total_cycles = 0
     start_time = time.clock()
 
+    if self.ctx.cfg.debugger:
+      self.ctx.debugger.start_debugger(23946)
+
     # main loop
     try:
       while self.stay:
@@ -150,6 +155,9 @@ class VamosRun:
       # get exit code from CPU
       exit_code = int(self.cpu.r_reg(REG_D0))
       log_main.info("exit code=%d", exit_code)
+
+    if self.ctx.cfg.debugger:
+      self.ctx.debugger.stop_debugger(exit_code)
 
     return exit_code
 
