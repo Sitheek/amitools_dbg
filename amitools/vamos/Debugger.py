@@ -4,7 +4,6 @@ import ctypes as c
 from musashi import m68k
 
 from label.LabelLib import LabelLib
-from label.LabelStruct import LabelStruct
 from Log import log_main
 
 class BreakpointType:
@@ -12,9 +11,6 @@ class BreakpointType:
   BPT_R = 2
   BPT_W = 4
   BPT_RW = BPT_R | BPT_W
-
-class MemoryType:
-  MEM_M68K = 1
 
 class EventType:
   DBG_EVT_STARTED = 1
@@ -59,8 +55,7 @@ class DebuggerEvent(c.Structure):
               ('u', DebuggerEventUnion)]
 
 class MemBuffer(c.Structure):
-  _fields_ = [('type', c.c_int32),
-              ('size', c.c_int32),
+  _fields_ = [('size', c.c_int32),
               ('address', c.c_uint32),
               ('buffer', c.c_uint8 * 1024)]
 
@@ -502,7 +497,6 @@ class Debugger:
         elif self.msg_req.type == RequestType.REQ_SET_REG:
             self.ctx.cpu.w_reg(self.msg_req.u.reg.index, self.msg_req.u.reg.value)
         elif self.msg_req.type == RequestType.REQ_READ_MEM:
-            self.msg_resp.u.mem.type = self.msg_req.u.mem.type
             self.msg_resp.u.mem.size = self.msg_req.u.mem.size
 
             self.dont_check_bp = True
@@ -512,7 +506,6 @@ class Debugger:
 
         elif self.msg_req.type == RequestType.REQ_WRITE_MEM:
             self.msg_resp.u.mem.size = self.msg_req.u.mem.size
-            self.msg_resp.u.mem.type = self.msg_req.u.mem.type
 
             self.dont_check_bp = True
             for i in xrange(self.msg_req.u.mem.size):
